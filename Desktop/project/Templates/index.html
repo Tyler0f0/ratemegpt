@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RateMeGPT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-3">RateMeGPT</h1>
+        <form id="rating-form">
+            <div class="mb-3">
+                <label for="text" class="form-label">Enter your text | If you uploaded you documents type your name! :</label>
+                <textarea id="text" name="text" class="form-control" rows="10" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="file" class="form-label">Or upload a document:</label>
+                <input type="file" id="file" name="file" class="form-control" accept=".txt,.pdf,.doc,.docx">
+            </div>
+            <button type="submit" class="btn btn-primary">Rate</button>
+        </form>
+        <div id="result" class="mt-4" style="display:none;">
+            <h2>Rating:</h2>
+            <p id="rating"></p>
+        </div>
+    </div>
+    <script>
+        $("#rating-form").on("submit", function(e) {
+            e.preventDefault();
+            let text = $("#text").val();
+            const file = $("#file")[0].files[0];
+            if (!text && !file) {
+                alert("Please enter text or upload a file.");
+                return;
+            }
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+                $.ajax({
+                    url: "/rate",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $("#rating").text(data.rating);
+                        $("#result").show();
+                    },
+                    error: function(xhr, status, error) {
+                        alert(xhr.responseJSON.error);
+                    }
+                });
+            } else {
+                $.post("/rate", { text: text })
+                    .done(function (data) {
+                        $("#rating").text(data.rating);
+                        $("#result").show();
+                    })
+                    .fail(function (xhr, status, error) {
+                        alert(xhr.responseJSON.error);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
+```
+
