@@ -1,1 +1,1 @@
-web: gunicorn  app:app --bind
+web: python ratemegpt.py
