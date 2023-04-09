@@ -1,1 +1,2 @@
 web: python ratemegpt.py
+web : gunicorn ratemegpt.py
