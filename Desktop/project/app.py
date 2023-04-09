@@ -18,7 +18,7 @@ def rate_writing(text):
         stop=None,
         temperature=0.5,
     )
-    return response.choices[0].text.strip()
+    return response.choices[0].text.strip() # type: ignore
 
 @app.route('/')
 def index():
@@ -30,7 +30,7 @@ def rate():
         text = request.form['text']
     elif 'file' in request.files:
         file = request.files['file']
-        filename = secure_filename(file.filename)
+        filename = secure_filename(file.filename) # type: ignore
         file_ext = filename.split('.')[-1]
 
         if file_ext == 'txt':
